@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نور الحسين</title>
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-compat.js"></script>
+
+    <script src="config.js"></script>
+</head>
+<body>
+
+    <div id="install-banner" style="display:none; background:#2c3e50; color:white; padding:15px; position:fixed; bottom:0; width:100%; z-index:9999; text-align:center; box-shadow: 0 -2px 10px rgba(0,0,0,0.2);">
+        <p style="margin:0 0 10px 0;">قم بتثبيت التطبيق لتجربة أفضل وإشعارات فورية</p>
+        <button id="installBtn" class="btn-primary" style="border:1px solid #d4af37;">تثبيت التطبيق</button>
+        <button onclick="document.getElementById('install-banner').style.display='none'" class="btn-xs" style="margin-right:10px;">إغلاق</button>
+    </div>
+
+    <div id="ios-install-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('ios-install-modal').style.display='none'">&times;</span>
+            <h3>تثبيت على iPhone</h3>
+            <p>لتثبيت التطبيق:</p>
+            <ol style="text-align: right; padding-right: 20px;">
+                <li>اضغط على زر المشاركة <i class="fas fa-share-square"></i> في المتصفح.</li>
+                <li>اختر <strong>"إضافة إلى الصفحة الرئيسية" (Add to Home Screen)</strong>.</li>
+            </ol>
+        </div>
+    </div>
+
+    <section id="screen-admin-login" class="app-section">
+        <div class="login-box">
+            <h2>نور الحسين (الإدارة)</h2>
+            <p>أدخل الرمز السري للمدير</p>
+            <input type="password" id="adminPinInput" placeholder="الرمز السري" autocomplete="new-password">
+            <button onclick="checkAdminLogin()" class="btn-primary">دخول المدير</button>
+        </div>
+    </section>
+
+    <section id="screen-client-login" class="app-section">
+        <div class="login-box">
+            <h2>معاينة ديونك</h2>
+            <p>أهلاً بك في نظام المتابعة</p>
+            
+            <input type="number" id="clientCodeInput" placeholder="أدخل كود الزبون الخاص بك" class="big-input">
+            <button onclick="checkClientLoginFirebase()" class="btn-primary">دخول</button>
+        </div>
+    </section>
+
+    <section id="screen-client-view" class="app-section">
+        <header class="app-header">
+            <div><i class="fas fa-user-lock"></i> كشف حساب: <span id="cvName"></span></div>
+            <button id="notify-btn" onclick="requestNotificationPermission()" class="btn-xs" style="display:none; background:#e74c3c;">
+                <i class="fas fa-bell-slash"></i> تفعيل الإشعارات
+            </button>
+        </header>
+        <div class="container view-mode">
+            <div class="report-summary">
+                <div class="box sale">مبيعات: <span id="cvSales">0</span></div>
+                <div class="box paid">واصل: <span id="cvPaid">0</span></div>
+                <div class="box debt">باقي: <span id="cvDebt">0</span></div>
+            </div>
+            <h3>سجل الحركات</h3>
+            <div class="transactions-list" id="cvTransList">
+                <p style="text-align:center; padding:20px;">جاري تحميل البيانات...</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="screen-admin-app" class="app-section">
+        <div id="splash-screen">
+            <div class="splash-content">
+                <h1 class="glow-text">نور الحسين</h1>
+                <div class="loader"></div>
+            </div>
+        </div>
+        <header class="app-header">
+            <div id="current-customer-display">الزبون: <span id="headerCustomerName">...</span></div>
+            <button onclick="clearSelection()" class="btn-xs">تغيير</button>
+        </header>
+        <div class="app-container">
+             <div id="tab-customers" class="tab-content active">
+                <div class="customer-list" id="customerListContainer"></div>
+             </div>
+             </div>
+        <nav class="bottom-nav">
+             <a href="#" onclick="switchTab('tab-customers')" class="nav-item active"><i class="fas fa-users"></i><span>الزبائن</span></a>
+              </nav>
+        
+        <div id="addCustomerModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeAddCustomerModal()">&times;</span>
+                <h3>زبون جديد</h3>
+                <input type="text" id="newCName" placeholder="الاسم" autocomplete="off">
+                <input type="text" id="newCPhone" placeholder="الهاتف" autocomplete="off">
+                 <button onclick="confirmAddCustomer()" class="btn-primary">حفظ</button>
+            </div>
+        </div>
+    </section>
+
+    <script src="script.js"></script>
+</body>
+</html>
